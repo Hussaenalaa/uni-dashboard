@@ -1,3 +1,4 @@
+import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -76,6 +77,21 @@ const AssistantListPage = () => {
 
       <td>
         <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormModal
+                table="teacher"   // لأن assistant غالبًا يتعامل كـ teacher في schema
+                type="update"
+                data={item}
+              />
+              <FormModal
+                table="teacher"
+                type="delete"
+                id={item.id}
+              />
+            </>
+          )}
+
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
             <Image
               src="/view.png"
@@ -118,6 +134,13 @@ const AssistantListPage = () => {
                 height={14}
               />
             </button>
+
+            {role === "admin" && (
+              <FormModal
+                table="teacher"
+                type="create"
+              />
+            )}
           </div>
         </div>
       </div>
