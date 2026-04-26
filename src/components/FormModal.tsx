@@ -12,11 +12,16 @@ const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1 className="text-center p-4">Loading...</h1>,
 });
 
+const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
+  loading: () => <h1 className="text-center p-4">Loading...</h1>,
+});
+
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
   student: (type, data) => <StudentForm type={type} data={data} />,
   teacher: (type, data) => <TeacherForm type={type} data={data} />,
+  subject: (type, data) => <SubjectForm type={type} data={data} />,
 };
 
 const FormModal = ({

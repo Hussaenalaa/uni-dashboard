@@ -341,56 +341,114 @@ export const assistantsData = [
   },
 ];
 
-export const subjectsData = [
+export type Subject = {
+  id: number;
+  name: string;
+  code: string;
+  teachers: string[];
+  hours: number;
+  type: "نظري" | "عملي" | "نظري وعملي";
+};
+
+export type DepartmentYear = {
+  year: 1 | 2 | 3 | 4;
+  subjects: Subject[];
+};
+
+export type Department = {
+  id: string;
+  name: string;
+  years: DepartmentYear[];
+};
+
+export const departmentsData: Department[] = [
   {
-    id: 1,
-    name: "Math",
-    teachers: ["Alice Phelps", "Russell Davidson"],
+    id: "IT",
+    name: "تكنولوجيا المعلومات",
+    years: [
+      {
+        year: 1,
+        subjects: [
+          { id: 101, name: "برمجة 1", code: "IT101", teachers: ["د. أحمد حسن"], hours: 3, type: "نظري وعملي" },
+          { id: 102, name: "رياضيات 1", code: "IT102", teachers: ["د. سارة محمد"], hours: 3, type: "نظري" },
+          { id: 103, name: "مقدمة في الحاسب", code: "IT103", teachers: ["د. عمر خالد"], hours: 2, type: "نظري" },
+          { id: 104, name: "إلكترونيات", code: "IT104", teachers: ["د. منى علي"], hours: 3, type: "نظري وعملي" },
+          { id: 105, name: "لغة إنجليزية", code: "IT105", teachers: ["د. يوسف عادل"], hours: 2, type: "نظري" },
+        ],
+      },
+      {
+        year: 2,
+        subjects: [
+          { id: 201, name: "هياكل البيانات", code: "IT201", teachers: ["د. أحمد حسن"], hours: 3, type: "نظري وعملي" },
+          { id: 202, name: "قواعد البيانات", code: "IT202", teachers: ["د. سارة محمد"], hours: 3, type: "نظري وعملي" },
+          { id: 203, name: "شبكات الحاسب", code: "IT203", teachers: ["د. حسن محمود"], hours: 3, type: "نظري وعملي" },
+          { id: 204, name: "رياضيات 2", code: "IT204", teachers: ["د. منى علي"], hours: 3, type: "نظري" },
+          { id: 205, name: "تطوير الويب", code: "IT205", teachers: ["د. يوسف عادل"], hours: 3, type: "عملي" },
+        ],
+      },
+      {
+        year: 3,
+        subjects: [
+          { id: 301, name: "أنظمة التشغيل", code: "IT301", teachers: ["د. عمر خالد"], hours: 3, type: "نظري وعملي" },
+          { id: 302, name: "أمن المعلومات", code: "IT302", teachers: ["د. حسن محمود"], hours: 3, type: "نظري وعملي" },
+          { id: 303, name: "ذكاء اصطناعي", code: "IT303", teachers: ["د. نور إبراهيم"], hours: 3, type: "نظري وعملي" },
+          { id: 304, name: "ccnp Routing", code: "IT304", teachers: ["د. محمود فتحي"], hours: 3, type: "عملي" },
+          { id: 305, name: "ccnp Switching", code: "IT305", teachers: ["د. ليلى مصطفى"], hours: 3, type: "عملي" },
+        ],
+      },
+      {
+        year: 4,
+        subjects: [
+          { id: 401, name: "مشروع التخرج", code: "IT401", teachers: ["د. أحمد حسن", "د. سارة محمد"], hours: 6, type: "عملي" },
+          { id: 402, name: "إنترنت الأشياء", code: "IT402", teachers: ["د. نور إبراهيم"], hours: 3, type: "نظري وعملي" },
+          { id: 403, name: "Big Data", code: "IT403", teachers: ["د. محمود فتحي"], hours: 3, type: "نظري وعملي" },
+          { id: 404, name: "تعلم الآلة", code: "IT404", teachers: ["د. ليلى مصطفى"], hours: 3, type: "نظري وعملي" },
+          { id: 405, name: "Robotics", code: "IT405", teachers: ["د. عمر خالد"], hours: 3, type: "عملي" },
+        ],
+      },
+    ],
   },
   {
-    id: 2,
-    name: "English",
-    teachers: ["Manuel Becker", "Eddie Chavez"],
-  },
-  {
-    id: 3,
-    name: "Physics",
-    teachers: ["Lola Newman", "Darrell Delgado"],
-  },
-  {
-    id: 4,
-    name: "Chemistry",
-    teachers: ["Nathan Kelly", "Benjamin Snyder"],
-  },
-  {
-    id: 5,
-    name: "Biology",
-    teachers: ["Alma Benson", "Lina Collier"],
-  },
-  {
-    id: 6,
-    name: "History",
-    teachers: ["Hannah Bowman", "Betty Obrien"],
-  },
-  {
-    id: 7,
-    name: "Geography",
-    teachers: ["Lora French", "Sue Brady"],
-  },
-  {
-    id: 8,
-    name: "Art",
-    teachers: ["Harriet Alvarado", "Mayme Keller"],
-  },
-  {
-    id: 9,
-    name: "Music",
-    teachers: ["Gertrude Roy", "Rosa Singleton"],
-  },
-  {
-    id: 10,
-    name: "Literature",
-    teachers: ["Effie Lynch", "Brett Flowers"],
+    id: "CS",
+    name: "علوم الحاسب",
+    years: [
+      {
+        year: 1,
+        subjects: [
+          { id: 501, name: "برمجة بـ Python", code: "CS101", teachers: ["د. آية سمير"], hours: 3, type: "نظري وعملي" },
+          { id: 502, name: "رياضيات منطقية", code: "CS102", teachers: ["د. منى علي"], hours: 3, type: "نظري" },
+          { id: 503, name: "مقدمة علوم الحاسب", code: "CS103", teachers: ["د. يوسف عادل"], hours: 2, type: "نظري" },
+          { id: 504, name: "دوائر منطقية", code: "CS104", teachers: ["د. حسن محمود"], hours: 3, type: "نظري وعملي" },
+        ],
+      },
+      {
+        year: 2,
+        subjects: [
+          { id: 601, name: "خوارزميات", code: "CS201", teachers: ["د. آية سمير"], hours: 3, type: "نظري" },
+          { id: 602, name: "برمجة كائنية", code: "CS202", teachers: ["د. سارة محمد"], hours: 3, type: "نظري وعملي" },
+          { id: 603, name: "قواعد بيانات متقدمة", code: "CS203", teachers: ["د. عمر خالد"], hours: 3, type: "نظري وعملي" },
+          { id: 604, name: "نظرية الأتمتة", code: "CS204", teachers: ["د. نور إبراهيم"], hours: 3, type: "نظري" },
+        ],
+      },
+      {
+        year: 3,
+        subjects: [
+          { id: 701, name: "هندسة البرمجيات", code: "CS301", teachers: ["د. آية سمير"], hours: 3, type: "نظري وعملي" },
+          { id: 702, name: "الذكاء الاصطناعي", code: "CS302", teachers: ["د. محمود فتحي"], hours: 3, type: "نظري وعملي" },
+          { id: 703, name: "معالجة الصور", code: "CS303", teachers: ["د. ليلى مصطفى"], hours: 3, type: "نظري وعملي" },
+          { id: 704, name: "برمجة النظم", code: "CS304", teachers: ["د. حسن محمود"], hours: 3, type: "عملي" },
+        ],
+      },
+      {
+        year: 4,
+        subjects: [
+          { id: 801, name: "مشروع التخرج", code: "CS401", teachers: ["د. آية سمير", "د. محمود فتحي"], hours: 6, type: "عملي" },
+          { id: 802, name: "تعلم عميق", code: "CS402", teachers: ["د. نور إبراهيم"], hours: 3, type: "نظري وعملي" },
+          { id: 803, name: "حوسبة سحابية", code: "CS403", teachers: ["د. عمر خالد"], hours: 3, type: "نظري وعملي" },
+          { id: 804, name: "برمجة تطبيقات", code: "CS404", teachers: ["د. يوسف عادل"], hours: 3, type: "عملي" },
+        ],
+      },
+    ],
   },
 ];
 
