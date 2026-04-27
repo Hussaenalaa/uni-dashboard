@@ -6,37 +6,27 @@ import { z } from "zod";
 import InputField from "../InputField";
 import Image from "next/image";
 
-// ✅ Fix birthday + file handling
 const schema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters long!")
-    .max(20, "Username must be at most 20 characters long!"),
+  username: z.string().min(3).max(20),
+  email: z.string().email(),
+  password: z.string().min(8),
 
-  email: z.string().email("Invalid email address!"),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  phone: z.string().min(1),
+  address: z.string().min(1),
+  bloodType: z.string().min(1),
 
-  password: z.string().min(8, "Password must be at least 8 characters long!"),
-
-  firstName: z.string().min(1, "First name is required!"),
-  lastName: z.string().min(1, "Last name is required!"),
-  phone: z.string().min(1, "Phone is required!"),
-  address: z.string().min(1, "Address is required!"),
-  bloodType: z.string().min(1, "Blood Type is required!"),
-
-  // ✅ convert string -> Date
   birthday: z.preprocess(
     (val) => (typeof val === "string" ? new Date(val) : val),
-    z.date({ required_error: "Birthday is required!" })
+    z.date()
   ),
 
-  sex: z.enum(["male", "female"], {
-    required_error: "Sex is required!",
-  }),
+  sex: z.enum(["male", "female"]),
 
-  // ✅ File input = FileList
   img: z
-    .any()
-    .refine((files) => files?.length > 0, "Image is required"),
+    .instanceof(FileList)
+    .refine((files) => files.length > 0, "Image is required"),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -46,7 +36,7 @@ const TeacherForm = ({
   data,
 }: {
   type: "create" | "update";
-  data?: any;
+  data?: Partial<Inputs>;
 }) => {
   const {
     register,
@@ -54,14 +44,18 @@ const TeacherForm = ({
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      ...data,
-    },
+    defaultValues: data
+      ? {
+          ...data,
+          birthday: data.birthday
+            ? new Date(data.birthday as any)
+            : undefined,
+        }
+      : undefined,
   });
 
   const onSubmit = handleSubmit((formData) => {
-    // ✅ extract file correctly
-    const file = formData.img?.[0];
+    const file = formData.img[0];
 
     console.log({
       ...formData,
@@ -95,14 +89,7 @@ const TeacherForm = ({
         <InputField label="Phone" name="phone" register={register} error={errors.phone} />
         <InputField label="Address" name="address" register={register} error={errors.address} />
         <InputField label="Blood Type" name="bloodType" register={register} error={errors.bloodType} />
-
-        <InputField
-          label="Birthday"
-          name="birthday"
-          type="date"
-          register={register}
-          error={errors.birthday}
-        />
+        <InputField label="Birthday" name="birthday" type="date" register={register} error={errors.birthday} />
 
         {/* Sex */}
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -122,7 +109,7 @@ const TeacherForm = ({
           )}
         </div>
 
-        {/* File upload */}
+        {/* File */}
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label htmlFor="img" className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer">
             <Image src="/upload.png" alt="" width={28} height={28} />
@@ -133,7 +120,7 @@ const TeacherForm = ({
 
           {errors.img && (
             <p className="text-xs text-red-400">
-              {errors.img.message as string}
+              {errors.img.message?.toString()}
             </p>
           )}
         </div>
