@@ -1,6 +1,6 @@
 // TEMPORARY DATA
-
-export let role = "admin";
+// NOTE: The hardcoded `role` variable has been removed.
+// Role is now read from AuthContext (useAuth hook) across the entire app.
 
 export const teachersData = [
   {

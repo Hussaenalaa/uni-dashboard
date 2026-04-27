@@ -2,7 +2,8 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, studentsData } from "@/lib/data";
+import { studentsData } from "@/lib/data";
+import { getServerRole } from "@/lib/server-role";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -27,7 +28,8 @@ const columns = [
   { header: "Actions", accessor: "action" },
 ];
 
-const StudentListPage = () => {
+const StudentListPage = async () => {
+  const role = await getServerRole();
   const renderRow = (item: Student) => (
     <tr
       key={item.id}
@@ -57,7 +59,7 @@ const StudentListPage = () => {
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {role === "admin" && (
+          {role === "ADMIN" && (
             <FormModal table="student" type="delete" id={item.id} />
           )}
         </div>
@@ -79,7 +81,7 @@ const StudentListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
+            {role === "ADMIN" && (
               <FormModal table="student" type="create" />
             )}
           </div>

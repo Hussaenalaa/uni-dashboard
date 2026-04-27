@@ -1,7 +1,6 @@
-const Homepage = () => {
-  return (
-    <div className=''>Homepage</div>
-  )
-}
+import { redirect } from "next/navigation";
 
-export default Homepage
+// Root page redirects to login — middleware will redirect to the right dashboard
+export default function HomePage() {
+  redirect("/login");
+}

@@ -3,7 +3,8 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import Image from "next/image";
-import { role, assistantsData } from "@/lib/data";
+import { assistantsData } from "@/lib/data";
+import { getServerRole } from "@/lib/server-role";
 
 type Assistant = {
   id: number;
@@ -46,7 +47,8 @@ const columns = [
   },
 ];
 
-const AssistantListPage = () => {
+const AssistantListPage = async () => {
+  const role = await getServerRole();
   const renderRow = (item: Assistant) => (
     <tr
       key={item.id}
@@ -77,7 +79,7 @@ const AssistantListPage = () => {
 
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" && (
+          {role === "ADMIN" && (
             <>
               <FormModal
                 table="teacher"   // لأن assistant غالبًا يتعامل كـ teacher في schema
@@ -135,7 +137,7 @@ const AssistantListPage = () => {
               />
             </button>
 
-            {role === "admin" && (
+            {role === "ADMIN" && (
               <FormModal
                 table="teacher"
                 type="create"

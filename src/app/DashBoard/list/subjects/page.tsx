@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { role, departmentsData, Department, Subject } from "@/lib/data";
+import { departmentsData, Department, Subject } from "@/lib/data";
 import SubjectForm from "@/components/forms/SubjectForm";
+import { useAuth } from "@/context/AuthContext";
 
 const typeColors: Record<Subject["type"], string> = {
   "نظري": "bg-blue-100 text-blue-700",
@@ -18,6 +19,8 @@ const yearLabels: Record<number, string> = {
 };
 
 export default function SubjectListPage() {
+  const { user } = useAuth();
+  const role = user?.role ?? "STUDENT";
   const [departments, setDepartments] = useState<Department[]>(departmentsData);
   const [activeDept, setActiveDept] = useState(departmentsData[0].id);
   const [activeYear, setActiveYear] = useState<1 | 2 | 3 | 4>(1);
@@ -89,7 +92,7 @@ export default function SubjectListPage() {
             placeholder="ابحث عن مادة..."
             className="border border-gray-300 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-lamaSky w-48"
           />
-          {role === "admin" && (
+          {role === "ADMIN" && (
             <button
               onClick={() => setModal({ open: true, type: "create" })}
               className="flex items-center gap-1 bg-lamaYellow text-gray-800 text-sm px-3 py-1.5 rounded-full font-medium hover:bg-yellow-300 transition"
@@ -161,7 +164,7 @@ export default function SubjectListPage() {
               <th className="text-right p-3 border-b hidden md:table-cell">الأساتذة</th>
               <th className="text-right p-3 border-b hidden md:table-cell">الساعات</th>
               <th className="text-right p-3 border-b">النوع</th>
-              {role === "admin" && (
+              {role === "ADMIN" && (
                 <th className="text-right p-3 border-b">الإجراءات</th>
               )}
             </tr>
@@ -170,7 +173,7 @@ export default function SubjectListPage() {
             {filteredSubjects.length === 0 ? (
               <tr>
                 <td
-                  colSpan={role === "admin" ? 7 : 6}
+                  colSpan={role === "ADMIN" ? 7 : 6}
                   className="text-center py-10 text-gray-400"
                 >
                   لا توجد مواد مطابقة
@@ -202,7 +205,7 @@ export default function SubjectListPage() {
                       {subject.type}
                     </span>
                   </td>
-                  {role === "admin" && (
+                  {role === "ADMIN" && (
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <button
