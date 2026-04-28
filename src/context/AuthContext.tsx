@@ -3,15 +3,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Role } from "@/types/role";
 
-type User = {
-  username: string;
-  role: Role;
-} | null;
+type User = { username: string; role: Role; profileId?: number } | null;
 
 type AuthContextType = {
   user: User;
   loading: boolean;
-  login: (username: string, role: Role) => void;
+  login: (username: string, role: Role, profileId?: number) => void;
   logout: () => void;
 };
 
@@ -21,7 +18,6 @@ function setCookie(name: string, value: string, days = 7) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${name}=${value}; path=/; expires=${expires}`;
 }
-
 function deleteCookie(name: string) {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
 }
@@ -35,20 +31,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (stored) {
       const parsed = JSON.parse(stored);
       setUser(parsed);
-      // Sync cookies so middleware can read the session
       setCookie("role", parsed.role);
       setCookie("username", parsed.username);
+      if (parsed.profileId) setCookie("profileId", String(parsed.profileId));
     }
     setLoading(false);
   }, []);
 
-  const login = (username: string, role: Role) => {
-    const newUser = { username, role };
+  const login = (username: string, role: Role, profileId?: number) => {
+    const newUser = { username, role, profileId };
     setUser(newUser);
     localStorage.setItem("uni_user", JSON.stringify(newUser));
-    // Set cookies for middleware-level route protection
     setCookie("role", role);
     setCookie("username", username);
+    if (profileId) setCookie("profileId", String(profileId));
   };
 
   const logout = () => {
@@ -56,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("uni_user");
     deleteCookie("role");
     deleteCookie("username");
+    deleteCookie("profileId");
   };
 
   return (
@@ -66,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used inside AuthProvider");
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  return ctx;
 };

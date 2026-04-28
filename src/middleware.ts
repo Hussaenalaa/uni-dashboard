@@ -5,35 +5,57 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get("role")?.value;
   const path = request.nextUrl.pathname;
 
-  // Always allow public paths
   const publicPaths = ["/login", "/unauthorized"];
   if (publicPaths.includes(path)) return NextResponse.next();
 
-  // Redirect unauthenticated users to login
-  if (!role) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!role) return NextResponse.redirect(new URL("/login", request.url));
+
+  // These paths are accessible to all authenticated roles
+  const sharedPaths = [
+    "/DashBoard/list/announcements",
+    "/DashBoard/list/events",
+    "/DashBoard/list/messages",
+  ];
+  if (sharedPaths.some(p => path.startsWith(p))) return NextResponse.next();
+
+  // Teachers & admins can access teacher detail pages
+  if (path.startsWith("/DashBoard/list/teachers")) {
+    if (role === "ADMIN" || role === "TEACHER") return NextResponse.next();
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  // Role → allowed dashboard base path mapping (matches actual /DashBoard/ casing)
-  const roleRoutes: Record<string, string> = {
+  // Students, teachers, admins can access student detail pages  
+  if (path.startsWith("/DashBoard/list/students")) {
+    if (["ADMIN", "TEACHER", "STUDENT", "PARENT"].includes(role)) return NextResponse.next();
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
+
+  // Admin-only list pages
+  const adminOnlyPaths = [
+    "/DashBoard/list/parents",
+    "/DashBoard/list/subjects",
+    "/DashBoard/list/classes",
+    "/DashBoard/list/lessons",
+    "/DashBoard/list/finance",
+  ];
+  if (adminOnlyPaths.some(p => path.startsWith(p))) {
+    if (role === "ADMIN") return NextResponse.next();
+    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  }
+
+  // Role dashboard pages
+  const roleDashboards: Record<string, string> = {
     ADMIN: "/DashBoard/admin",
     TEACHER: "/DashBoard/teacher",
     STUDENT: "/DashBoard/student",
     PARENT: "/DashBoard/parent",
     STAFF: "/DashBoard/staff",
   };
-
-  // Shared paths all roles can access (lists, etc.)
-  const sharedPaths = ["/DashBoard/list"];
-
   if (path.startsWith("/DashBoard")) {
-    const allowed = roleRoutes[role];
-    const isShared = sharedPaths.some((p) => path.startsWith(p));
-
-    if (isShared) return NextResponse.next();
-
-    if (allowed && !path.startsWith(allowed)) {
-      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    const myDash = roleDashboards[role];
+    if (myDash && path.startsWith(myDash)) return NextResponse.next();
+    if (path === "/DashBoard" || path === "/DashBoard/") {
+      return NextResponse.redirect(new URL(myDash ?? "/login", request.url));
     }
   }
 
