@@ -17,10 +17,7 @@ const schema = z.object({
   address: z.string().min(1),
   bloodType: z.string().min(1),
 
-  birthday: z.preprocess(
-    (val) => (typeof val === "string" ? new Date(val) : val),
-    z.date()
-  ),
+  birthday: z.coerce.date(),
 
   sex: z.enum(["male", "female"]),
 
@@ -43,7 +40,7 @@ const TeacherForm = ({
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
     defaultValues: data
       ? {
           ...data,
