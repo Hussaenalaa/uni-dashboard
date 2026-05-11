@@ -2,8 +2,7 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { eventsData } from "@/lib/data";
-import { getServerRole } from "@/lib/server-role";
+import { eventsData, role } from "@/lib/data";
 import Image from "next/image";
 
 type Event = {

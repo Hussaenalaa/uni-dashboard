@@ -4,8 +4,8 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import {
   assignmentsData,
+  role,
 } from "@/lib/data";
-import { getServerRole } from "@/lib/server-role";
 import Image from "next/image";
 
 type Assignment = {
@@ -54,7 +54,7 @@ const AssignmentListPage = async () => {
       <td className="hidden md:table-cell">{item.dueDate}</td>
       <td>
         <div className="flex items-center gap-2">
-          {(role === "ADMIN" || role === "TEACHER") && (
+          {role === "ADMIN" || role === "teacher" && (
             <>
               <FormModal table="assignment" type="update" data={item} />
               <FormModal table="assignment" type="delete" id={item.id} />
@@ -81,7 +81,7 @@ const AssignmentListPage = async () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {(role === "ADMIN" || role === "TEACHER") && <FormModal table="assignment" type="create" />}
+            {role === "ADMIN" || role === "teacher" && <FormModal table="assignment" type="create" />}
           </div>
         </div>
       </div>
